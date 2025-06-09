@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
@@ -19,10 +20,10 @@ var clients=make(map[*websocket.Conn]bool) //connected clients
 var boradcast=make(chan []byte) //Broadcast channel
 var mutex=&sync.Mutex{} //protected clients map
 
-func WebScoketHandler(w http.ResponseWriter,r*http.Request){
+func WebScoketHandler(c *gin.Context){
 
 	//upgrade the upcoming request from HTTP to a websocket
-	conn,err:=upgrader.Upgrade(w,r,nil)
+	conn,err:=upgrader.Upgrade(c.Writer,c.Request,nil)
 	if err!=nil{
 		fmt.Printf("error in upgrading :%v",err)
 		return
